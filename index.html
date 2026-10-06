@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#2f6b4f">
+  <title>คลังความรู้การงานอาชีพ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- non-blocking: offline devices fall back to system Thai fonts instead of waiting -->
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&family=Prompt:wght@500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <header class="topbar">
+    <button class="icon-btn" id="backBtn" aria-label="ย้อนกลับ" hidden>&#8249;</button>
+    <a href="#/" class="brand" id="brand">
+      <span class="brand-logo" id="brandLogo" aria-hidden="true">📚</span>
+      <span class="brand-text">
+        <strong id="brandName">คลังความรู้การงานอาชีพ</strong>
+        <small id="brandSub"></small>
+      </span>
+    </a>
+  </header>
+  <div id="draftBanner" class="draft-banner" hidden>
+    กำลังแสดง <b>ฉบับร่างของครู</b> (เห็นเฉพาะเครื่องนี้) · <a href="#/teacher">ไปหน้าครู</a>
+  </div>
+  <main id="app" tabindex="-1"></main>
+  <div id="modal" class="modal" hidden></div>
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="content.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
