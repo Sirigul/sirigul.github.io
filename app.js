@@ -553,6 +553,10 @@
     if (!store.set(K.draft, draft)) toast('บันทึกไม่สำเร็จ: พื้นที่เก็บข้อมูลของเบราว์เซอร์เต็ม (ลองลดขนาดรูป)', 5000);
     else if (msg !== false) toast(msg || 'บันทึกฉบับร่างแล้ว');
     applySettings();
+    // keep the section counts in the unit editor in sync after add/delete
+    const m = location.hash.match(/^#\/teacher\/unit\/([^/]+)$/);
+    const u = m && (draft.units || []).find(x => x.id === m[1]);
+    if (u) $app.querySelectorAll('[data-count]').forEach(el => { el.textContent = (u[el.dataset.count] || []).length; });
   }
 
   route(/^\/teacher$/, function teacher() {
@@ -711,11 +715,11 @@
         <div class="row"><button class="btn primary" id="u-save">บันทึกข้อมูลหน่วย</button><span class="spacer"></span><button class="btn danger" id="u-del">ลบหน่วยนี้</button></div>
       </details>
 
-      <details class="t-item"><summary>📖 เนื้อหา (${u.lessons.length} เรื่อง)</summary><div id="ed-lessons"></div></details>
-      <details class="t-item"><summary>🖼️ สไลด์ (${u.slides.length} ภาพ)</summary><div id="ed-slides"></div></details>
-      <details class="t-item"><summary>▶️ วิดีโอ (${u.videos.length})</summary><div id="ed-videos"></div></details>
-      <details class="t-item"><summary>📄 เอกสาร/ใบงาน (${u.files.length})</summary><div id="ed-files"></div></details>
-      <details class="t-item"><summary>✏️ แบบฝึกหัด (${u.exercises.length} ข้อ)</summary><div id="ed-ex"></div></details>
+      <details class="t-item"><summary>📖 เนื้อหา (<span data-count="lessons">${u.lessons.length}</span> เรื่อง)</summary><div id="ed-lessons"></div></details>
+      <details class="t-item"><summary>🖼️ สไลด์ (<span data-count="slides">${u.slides.length}</span> ภาพ)</summary><div id="ed-slides"></div></details>
+      <details class="t-item"><summary>▶️ วิดีโอ (<span data-count="videos">${u.videos.length}</span>)</summary><div id="ed-videos"></div></details>
+      <details class="t-item"><summary>📄 เอกสาร/ใบงาน (<span data-count="files">${u.files.length}</span>)</summary><div id="ed-files"></div></details>
+      <details class="t-item"><summary>✏️ แบบฝึกหัด (<span data-count="exercises">${u.exercises.length}</span> ข้อ)</summary><div id="ed-ex"></div></details>
       <a class="btn" href="#/teacher">‹ กลับหน้าครู</a>
     </div>`;
     const $ = s => document.getElementById(s);
