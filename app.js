@@ -465,33 +465,45 @@
     let score = 0;
     const detail = [];
     const form = document.getElementById('quizForm');
+    // Teacher setting: by default a wrong answer shows only "wrong", never the key (students share keys with friends)
+    const reveal = !!(C.settings || {}).showAnswers;
     items.forEach((q, i) => {
       const s = scoreItem(q, ans[i]); score += s;
       const card = document.getElementById('q-' + i);
       const fb = card.querySelector('.fb');
       card.querySelectorAll('button, select, textarea').forEach(x => { x.disabled = true; });
       if (q.type === 'mcq') {
-        card.querySelectorAll('.choice').forEach(b => { const v = +b.dataset.v; if (v === +q.answer) b.classList.add('correct'); else if (String(v) === String(ans[i])) b.classList.add('wrong'); });
+        card.querySelectorAll('.choice').forEach(b => {
+          const v = +b.dataset.v, picked = String(v) === String(ans[i]);
+          if (v === +q.answer && (reveal || picked)) b.classList.add('correct'); else if (picked) b.classList.add('wrong');
+        });
         detail.push(ans[i] == null ? '-' : THAI_KEYS[+ans[i]]);
       } else if (q.type === 'tf') {
-        card.querySelectorAll('.choice').forEach(b => { const v = b.dataset.v === 'true'; if (v === !!q.answer) b.classList.add('correct'); else if (b.dataset.v === ans[i]) b.classList.add('wrong'); });
+        card.querySelectorAll('.choice').forEach(b => {
+          const picked = b.dataset.v === ans[i];
+          if ((b.dataset.v === 'true') === !!q.answer && (reveal || picked)) b.classList.add('correct'); else if (picked) b.classList.add('wrong');
+        });
         detail.push(ans[i] == null ? '-' : ans[i] === 'true' ? 'ถูก' : 'ผิด');
       } else if (q.type === 'match') {
-        card.querySelectorAll('.match-row').forEach((row, r) => row.classList.add((ans[i] || {})[r] === q.pairs[r][1] ? 'correct' : 'wrong'));
+        if (reveal) card.querySelectorAll('.match-row').forEach((row, r) => row.classList.add((ans[i] || {})[r] === q.pairs[r][1] ? 'correct' : 'wrong'));
         detail.push(q.pairs.filter((p, r) => (ans[i] || {})[r] === p[1]).length + '/' + q.pairs.length);
       } else if (q.type === 'short') {
         detail.push(String(ans[i] || '').slice(0, 500));
       }
+      const show = reveal || s; // explanations/sample answers only when correct, or when the teacher enables answers
       let msg = '';
       if (q.type === 'short') {
-        msg = `<b>${s ? '✓ คำตอบมีประเด็นสำคัญ' : '✗ คำตอบยังไม่ครบประเด็น'}</b>${q.sample ? `<br>แนวคำตอบ: ${esc(q.sample)}` : ''}${(q.keywords || []).length ? `<br><span class="small muted">คำสำคัญ: ${q.keywords.map(esc).join(', ')}</span>` : ''}`;
+        msg = `<b>${s ? '✓ คำตอบมีประเด็นสำคัญ' : '✗ คำตอบยังไม่ครบประเด็น'}</b>` +
+          (show && q.sample ? `<br>แนวคำตอบ: ${esc(q.sample)}` : '') +
+          (show && (q.keywords || []).length ? `<br><span class="small muted">คำสำคัญ: ${q.keywords.map(esc).join(', ')}</span>` : '');
       } else if (q.type === 'match') {
-        msg = `<b>${s ? '✓ ถูกต้องทุกคู่' : '✗ ยังไม่ถูกทุกคู่'}</b><br>เฉลย: ${q.pairs.map(p => esc(p[0]) + ' → ' + esc(p[1])).join(' · ')}`;
+        msg = `<b>${s ? '✓ ถูกต้องทุกคู่' : '✗ ยังไม่ถูกทุกคู่'}</b>` + (reveal ? `<br>เฉลย: ${q.pairs.map(p => esc(p[0]) + ' → ' + esc(p[1])).join(' · ')}` : '');
       } else {
         const right = q.type === 'mcq' ? THAI_KEYS[q.answer] + '. ' + esc(q.choices[q.answer]) : (q.answer ? 'ถูก' : 'ผิด');
-        msg = `<b>${s ? '✓ ถูกต้อง' : '✗ ยังไม่ถูก'}</b>${s ? '' : ' · เฉลย: ' + right}`;
+        msg = `<b>${s ? '✓ ถูกต้อง' : '✗ ยังไม่ถูก'}</b>` + (!s && reveal ? ' · เฉลย: ' + right : '');
       }
-      if (q.explain) msg += `<br>${esc(q.explain)}`;
+      if (show && q.explain) msg += `<br>${esc(q.explain)}`;
+      if (!show) msg += '<br><span class="small">ลองกลับไปทบทวนเนื้อหาแล้วทำใหม่อีกครั้งนะ</span>';
       fb.innerHTML = `<div class="feedback ${q.type === 'short' ? 'info' : s ? 'good' : 'bad'}">${msg}</div>`;
     });
     form.querySelector('.quiz-bar').remove();
@@ -526,7 +538,7 @@
         <a class="btn" href="#/unit/${esc(u.id)}/lessons">📖 ทบทวนเนื้อหา</a>
         <button class="btn primary" id="retry">ทำใหม่</button>
       </div>
-      <p class="small muted" style="margin-top:10px">เลื่อนลงเพื่อดูเฉลยแต่ละข้อ</p>`;
+      <p class="small muted" style="margin-top:10px">${(C.settings || {}).showAnswers ? 'เลื่อนลงเพื่อดูเฉลยแต่ละข้อ' : 'เลื่อนลงเพื่อดูว่าข้อไหนถูก ข้อไหนยังไม่ถูก'}</p>`;
     form.prepend(res);
     res.querySelector('#retry').onclick = () => render();
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -617,6 +629,7 @@
           </div>
           <label class="field"><span>ข้อความต้อนรับหน้าแรก</span><input id="s-welcome" value="${esc(s.welcome || '')}"></label>
           <label class="field"><span>ลิงก์ Web App ของ Google Apps Script (สำหรับรับคะแนน)</span><input id="s-sheetUrl" value="${esc(s.sheetUrl || '')}" placeholder="https://script.google.com/macros/s/.../exec"></label>
+          <label class="check" style="margin-bottom:12px"><input type="checkbox" id="s-showAnswers" ${s.showAnswers ? 'checked' : ''}> แสดงเฉลยเมื่อนักเรียนตอบผิด <span class="muted small">(ปิดไว้ = บอกแค่ถูก/ผิด ไม่บอกคำตอบที่ถูก)</span></label>
           <div class="row"><button class="btn primary" id="saveSettings">บันทึกการตั้งค่า</button><button class="btn" id="testSheet">ทดสอบส่งคะแนน</button></div>
           <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
           <div class="grid2">
@@ -643,6 +656,7 @@
     });
     $('saveSettings').onclick = () => {
       ['appName', 'subtitle', 'teacher', 'school', 'welcome', 'sheetUrl'].forEach(k => { s[k] = $('s-' + k).value.trim(); });
+      s.showAnswers = $('s-showAnswers').checked;
       saveDraft('บันทึกการตั้งค่าแล้ว');
     };
     $('testSheet').onclick = () => {
