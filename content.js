@@ -80,10 +80,7 @@ window.APP_CONTENT = {
    ],
    "videos": [],
    "files": [
-    {
-     "title": "สไลด์ประกอบการสอน บ้านและสวนน่าอยู่ (PDF)",
-     "path": "files/u1/home-garden.pdf"
-    },
+    
     {
      "title": "ใบงานที่ 1 การออกแบบ้านประหยัดพลังงาน",
      "path": "files/u1/ใบงานออกแบบ้านประหยัดพลังงาน.pdf"
@@ -312,18 +309,9 @@ window.APP_CONTENT = {
     }
    ],
    "files": [
-    {
-     "title": "เครื่องดื่มเพื่อสุขภาพ (PDF)",
-     "path": "files/u2/healthy-drinks.pdf"
-    },
-    {
-     "title": "เครื่องดื่ม ตอนที่ 1 (PDF)",
-     "path": "files/u2/drinks-1.pdf"
-    },
-    {
-     "title": "เครื่องดื่ม ตอนที่ 2 (PDF)",
-     "path": "files/u2/drinks-2.pdf"
-    },
+    
+    
+    
     {
      "title": "ใบงาน เครื่องดื่ม",
      "path": "files/u2/worksheet-drinks.pdf"
@@ -445,10 +433,7 @@ window.APP_CONTENT = {
     }
    ],
    "files": [
-    {
-     "title": "การเลี้ยงสัตว์สร้างรายได้ (PDF)",
-     "path": "files/u3/animals-income.pdf"
-    },
+    
     {
      "title": "การเลี้ยงไก่ (PDF)",
      "path": "files/u3/chicken.pdf"
@@ -743,14 +728,8 @@ window.APP_CONTENT = {
     }
    ],
    "files": [
-    {
-     "title": "งานธุรกิจ (PDF)",
-     "path": "files/u5/business.pdf"
-    },
-    {
-     "title": "การติดต่อสื่อสาร (PDF)",
-     "path": "files/u5/communication.pdf"
-    },
+    
+    
     {
      "title": "ใบงาน งานธุรกิจ",
      "path": "files/u5/worksheet-business.pdf"
@@ -816,12 +795,9 @@ window.APP_CONTENT = {
      "title": "อาชีพในฝัน (PDF)",
      "path": "files/u6/careers.pdf"
     },
+    
     {
-     "title": "ใบงาน อาชีพในฝัน",
-     "path": "files/u6/worksheet-career.pdf"
-    },
-    {
-     "title": "ตัวอย่างใบงาน: วาดภาพตัวเองขณะประกอบอาชีพ",
+     "title": "ใบงาน อาชีพในฝันของฉัน (My Dream Career)",
      "path": "files/u6/draw-your-career.jpg"
     }
    ],
