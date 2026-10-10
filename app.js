@@ -147,6 +147,19 @@
     if (onMount) onMount(m);
   }
   function closeModal() { const m = document.getElementById('modal'); m.hidden = true; m.innerHTML = ''; }
+  // In-app confirm: browsers can silently suppress window.confirm ("prevent additional dialogs")
+  function askConfirm(msg, okLabel) {
+    return new Promise(resolve => {
+      modal(`<p style="font-weight:600">${esc(msg)}</p>
+        <div class="row"><button class="btn" id="cf-no">ยกเลิก</button><span class="spacer"></span><button class="btn primary" id="cf-ok">${esc(okLabel || 'ตกลง')}</button></div>`, root => {
+        const done = v => { closeModal(); resolve(v); };
+        root.onclick = e => { if (e.target === root) done(false); };
+        root.querySelector('#cf-no').onclick = () => done(false);
+        root.querySelector('#cf-ok').onclick = () => done(true);
+        root.querySelector('#cf-ok').focus();
+      });
+    });
+  }
 
   // ---------- router ----------
   const routes = [];
@@ -402,10 +415,10 @@
       if (t.dataset.match != null) { const i = +t.dataset.match; ans[i] = ans[i] || {}; ans[i][t.dataset.row] = t.value; }
       updateCount();
     });
-    form.onsubmit = e => {
+    form.onsubmit = async e => {
       e.preventDefault();
       const missing = items.filter((q, i) => !answered(q, ans[i])).length;
-      if (missing && !confirm(`ยังไม่ได้ตอบ ${missing} ข้อ ต้องการส่งเลยหรือไม่?`)) return;
+      if (missing && !(await askConfirm(`ยังไม่ได้ตอบ ${missing} ข้อ ต้องการส่งเลยหรือไม่?`, 'ส่งเลย'))) return;
       grade(u, items, ans, st);
     };
     updateCount();
@@ -617,8 +630,8 @@
     $('logout').onclick = () => { store.del(K.teacher); location.hash = '#/'; };
     $('export').onclick = exportContent;
     $('import').onchange = e => importContent(e.target.files[0]);
-    $('discard').onclick = () => {
-      if (!confirm('ทิ้งการแก้ไขทั้งหมดในเครื่องนี้ และกลับไปใช้เนื้อหาฉบับที่เผยแพร่อยู่?')) return;
+    $('discard').onclick = async () => {
+      if (!(await askConfirm('ทิ้งการแก้ไขทั้งหมดในเครื่องนี้ และกลับไปใช้เนื้อหาฉบับที่เผยแพร่อยู่?', 'ทิ้งฉบับร่าง'))) return;
       store.del(K.draft); draft = null; C = PUBLISHED; toast('ทิ้งฉบับร่างแล้ว'); render();
     };
     $('addUnit').onclick = () => {
@@ -728,8 +741,8 @@
       u.description = $('u-desc').value.trim(); u.objectives = $('u-obj').value.split('\n').map(x => x.trim()).filter(Boolean);
       saveDraft(); render();
     };
-    $('u-del').onclick = () => {
-      if (!confirm(`ลบหน่วย "${u.title}" ทั้งหมด (เนื้อหา สไลด์ แบบฝึกหัด)?`)) return;
+    $('u-del').onclick = async () => {
+      if (!(await askConfirm(`ลบหน่วย "${u.title}" ทั้งหมด (เนื้อหา สไลด์ แบบฝึกหัด)?`, 'ลบหน่วย'))) return;
       draft.units = draft.units.filter(x => x !== u); saveDraft('ลบหน่วยแล้ว'); location.hash = '#/teacher';
     };
     lessonEditor($('ed-lessons'), u);
@@ -744,11 +757,11 @@
     return `<div class="t-tools"><button class="btn sm" data-act="up" data-i="${i}">↑</button><button class="btn sm" data-act="down" data-i="${i}">↓</button><span class="spacer"></span><button class="btn sm danger" data-act="del" data-i="${i}">ลบ</button></div>`;
   }
   function wireTools(host, arr, rerender) {
-    host.querySelectorAll('[data-act]').forEach(b => b.onclick = () => {
+    host.querySelectorAll('[data-act]').forEach(b => b.onclick = async () => {
       const i = +b.dataset.i;
       if (b.dataset.act === 'up') moveItem(arr, i, -1);
       if (b.dataset.act === 'down') moveItem(arr, i, 1);
-      if (b.dataset.act === 'del') { if (!confirm('ลบรายการนี้?')) return; arr.splice(i, 1); }
+      if (b.dataset.act === 'del') { if (!(await askConfirm('ลบรายการนี้?', 'ลบ'))) return; arr.splice(i, 1); }
       saveDraft(false); rerender();
     });
   }
@@ -788,11 +801,11 @@
           <button class="btn sm" id="sl-path">+ เพิ่มจากที่อยู่ไฟล์/ลิงก์</button>
         </div>
         <p class="small muted">รูปที่เพิ่มจากเครื่องจะถูกย่อขนาดและฝังไว้ใน content.js (ไฟล์จะใหญ่ขึ้น ควรเพิ่มทีละไม่มาก) หรือนำไฟล์รูปไปวางในโฟลเดอร์ <code>web/media/...</code> แล้วเพิ่มด้วยที่อยู่ไฟล์</p>`;
-      host.querySelectorAll('[data-a]').forEach(b => b.onclick = () => {
+      host.querySelectorAll('[data-a]').forEach(b => b.onclick = async () => {
         const i = +b.dataset.i;
         if (b.dataset.a === 'l') moveItem(arr, i, -1);
         if (b.dataset.a === 'r') moveItem(arr, i, 1);
-        if (b.dataset.a === 'x') { if (!confirm('ลบสไลด์นี้?')) return; arr.splice(i, 1); }
+        if (b.dataset.a === 'x') { if (!(await askConfirm('ลบสไลด์นี้?', 'ลบ'))) return; arr.splice(i, 1); }
         saveDraft(false); draw();
       });
       host.querySelector('#sl-path').onclick = () => {
