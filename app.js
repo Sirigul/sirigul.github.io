@@ -208,7 +208,7 @@
         ${units.map((u, i) => {
           const p = unitProgress(u);
           const pct = p.total ? Math.round(p.read / p.total * 100) : 0;
-          return `<a class="unit-card" href="#/unit/${esc(u.id)}" style="--unit:${esc(u.color || '#2f6b4f')}">
+          return `<a class="unit-card" href="#/unit/${esc(u.id)}" style="--unit:${esc(u.color || '#2b4c7e')}">
             <span class="u-icon">${esc(u.icon || '📘')}</span>
             <span class="u-no">หน่วยที่ ${i + 1}</span>
             <h2>${esc(u.title)}</h2>
@@ -244,7 +244,7 @@
     const tabs = TABS.filter(([k]) => k === 'lessons' || k === 'exercise' || (u[k] || []).length);
     tab = tabs.some(t => t[0] === tab) ? tab : 'lessons';
     const i = unitIndex(id);
-    $app.style.setProperty('--unit', u.color || '#2f6b4f');
+    $app.style.setProperty('--unit', u.color || '#2b4c7e');
     $app.innerHTML = `
       <div class="unit-head">
         <div class="u-icon">${esc(u.icon || '📘')}</div>
@@ -386,7 +386,7 @@
     if (!u) { location.hash = '#/'; return; }
     const st = store.get(K.student, null);
     if (!st) { $app.innerHTML = ''; studentForm(() => render()); return; }
-    $app.style.setProperty('--unit', u.color || '#2f6b4f');
+    $app.style.setProperty('--unit', u.color || '#2b4c7e');
     const items = (u.exercises || []).map(q => q.type === 'match' ? Object.assign({}, q, { _right: shuffle(q.pairs.map(p => p[1])) }) : q);
     const ans = {};
     $app.innerHTML = `
@@ -635,7 +635,7 @@
       store.del(K.draft); draft = null; C = PUBLISHED; toast('ทิ้งฉบับร่างแล้ว'); render();
     };
     $('addUnit').onclick = () => {
-      const u = { id: uid('u'), title: 'หน่วยใหม่', icon: '📘', color: '#2f6b4f', description: '', objectives: [], lessons: [], slides: [], videos: [], files: [], exercises: [] };
+      const u = { id: uid('u'), title: 'หน่วยใหม่', icon: '📘', color: '#2b4c7e', description: '', objectives: [], lessons: [], slides: [], videos: [], files: [], exercises: [] };
       draft.units.push(u); saveDraft(); location.hash = '#/teacher/unit/' + u.id;
     };
     $app.querySelectorAll('[data-up]').forEach(b => b.onclick = () => {
@@ -713,7 +713,7 @@
     const u = draft.units.find(x => x.id === id);
     if (!u) { location.hash = '#/teacher'; return; }
     ['objectives', 'lessons', 'slides', 'videos', 'files', 'exercises'].forEach(k => { u[k] = u[k] || []; });
-    $app.style.setProperty('--unit', u.color || '#2f6b4f');
+    $app.style.setProperty('--unit', u.color || '#2b4c7e');
     $app.innerHTML = `<div class="stack">
       <div class="row"><h1 style="margin:0">${esc(u.icon)} แก้ไข: ${esc(u.title)}</h1><span class="spacer"></span><a class="btn sm" href="#/unit/${esc(u.id)}">ดูหน้านักเรียน</a></div>
 
@@ -721,7 +721,7 @@
         <label class="field"><span>ชื่อหน่วย</span><input id="u-title" value="${esc(u.title)}"></label>
         <div class="grid2">
           <label class="field"><span>ไอคอน (อีโมจิ)</span><input id="u-icon" value="${esc(u.icon || '')}"></label>
-          <label class="field"><span>สีประจำหน่วย</span><input id="u-color" type="color" value="${esc(u.color || '#2f6b4f')}" style="height:44px;padding:4px"></label>
+          <label class="field"><span>สีประจำหน่วย</span><input id="u-color" type="color" value="${esc(u.color || '#2b4c7e')}" style="height:44px;padding:4px"></label>
         </div>
         <label class="field"><span>คำอธิบายสั้น (แสดงบนการ์ดหน้าแรก)</span><input id="u-desc" value="${esc(u.description || '')}"></label>
         <label class="field"><span>จุดประสงค์การเรียนรู้ (บรรทัดละ 1 ข้อ)</span><textarea id="u-obj">${esc(u.objectives.join('\n'))}</textarea></label>

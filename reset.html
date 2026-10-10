@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ล้างฉบับร่างของครู</title>
+  <style>
+    :root { --bg: #f6f3ec; --card: #fff; --text: #23271f; --muted: #6a6e63; --primary: #2b4c7e; --line: #dcd6c8; }
+    @media (prefers-color-scheme: dark) { :root { --bg: #16181d; --card: #1f2229; --text: #ecebe4; --muted: #a3a69a; --primary: #8fb3e8; --line: #363b45; --ink: #0f1c30; } }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 16px; box-sizing: border-box;
+      background: var(--bg); color: var(--text); font: 18px/1.6 "Sarabun", "Leelawadee UI", Tahoma, sans-serif; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 24px; max-width: 440px; width: 100%; text-align: center; }
+    h1 { font-size: 1.3rem; margin: 0 0 8px; }
+    p { color: var(--muted); margin: 0 0 18px; }
+    button, a.btn { display: inline-block; min-height: 48px; padding: 10px 26px; border-radius: 999px; border: 0; background: var(--primary);
+      color: var(--ink, #fff); font: inherit; font-weight: 700; cursor: pointer; text-decoration: none; }
+    .done { font-size: 2.4rem; }
+  </style>
+</head>
+<body>
+  <div class="card" id="box">
+    <h1>ล้างฉบับร่างของครู</h1>
+    <p>ลบฉบับร่างที่เก็บไว้ในเบราว์เซอร์เครื่องนี้ แล้วกลับไปใช้เนื้อหาฉบับล่าสุดบนเว็บ<br>(เนื้อหาบนเว็บและคะแนนนักเรียนไม่ถูกลบ)</p>
+    <button id="go">ล้างฉบับร่าง</button>
+  </div>
+  <script>
+    document.getElementById('go').onclick = function () {
+      try { localStorage.removeItem('kk.draft'); } catch (e) {}
+      document.getElementById('box').innerHTML =
+        '<div class="done">✅</div><h1>ล้างฉบับร่างแล้ว</h1><p>กดปุ่มด้านล่างเพื่อกลับไปที่แอป</p>' +
+        '<a class="btn" href="./?v=' + Date.now() + '">กลับไปที่แอป</a>';
+    };
+  </script>
+</body>
+</html>
