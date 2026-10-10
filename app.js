@@ -33,6 +33,8 @@
   const clone = o => JSON.parse(JSON.stringify(o));
   const uid = p => (p || 'id') + Math.random().toString(36).slice(2, 8);
   const THAI_KEYS = ['ก', 'ข', 'ค', 'ง', 'จ', 'ฉ'];
+  // A multiple-choice item may accept several answers (like a Google Form key): answer is a number or an array
+  const answerKeys = q => (Array.isArray(q.answer) ? q.answer : [q.answer]).map(Number);
   function hashPin(pin) { // light obfuscation only — the content file is public anyway
     let h = 5381; const s = 'kk-salt:' + pin;
     for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) >>> 0;
@@ -447,7 +449,7 @@
   }
 
   function scoreItem(q, a) {
-    if (q.type === 'mcq') return +(a != null && +a === +q.answer);
+    if (q.type === 'mcq') return +(a != null && answerKeys(q).includes(+a));
     if (q.type === 'tf') return +(a != null && (a === 'true') === !!q.answer);
     if (q.type === 'match') return +(!!a && q.pairs.every((p, r) => a[r] === p[1]));
     if (q.type === 'short') {
@@ -475,7 +477,7 @@
       if (q.type === 'mcq') {
         card.querySelectorAll('.choice').forEach(b => {
           const v = +b.dataset.v, picked = String(v) === String(ans[i]);
-          if (v === +q.answer && (reveal || picked)) b.classList.add('correct'); else if (picked) b.classList.add('wrong');
+          if (answerKeys(q).includes(v) && (reveal || picked)) b.classList.add('correct'); else if (picked) b.classList.add('wrong');
         });
         detail.push(ans[i] == null ? '-' : THAI_KEYS[+ans[i]]);
       } else if (q.type === 'tf') {
@@ -499,7 +501,7 @@
       } else if (q.type === 'match') {
         msg = `<b>${s ? '✓ ถูกต้องทุกคู่' : '✗ ยังไม่ถูกทุกคู่'}</b>` + (reveal ? `<br>เฉลย: ${q.pairs.map(p => esc(p[0]) + ' → ' + esc(p[1])).join(' · ')}` : '');
       } else {
-        const right = q.type === 'mcq' ? THAI_KEYS[q.answer] + '. ' + esc(q.choices[q.answer]) : (q.answer ? 'ถูก' : 'ผิด');
+        const right = q.type === 'mcq' ? answerKeys(q).map(k => THAI_KEYS[k] + '. ' + esc(q.choices[k])).join(' หรือ ') : (q.answer ? 'ถูก' : 'ผิด');
         msg = `<b>${s ? '✓ ถูกต้อง' : '✗ ยังไม่ถูก'}</b>` + (!s && reveal ? ' · เฉลย: ' + right : '');
       }
       if (show && q.explain) msg += `<br>${esc(q.explain)}`;
@@ -884,8 +886,12 @@
         const i = +b.dataset.qsave, el = host.querySelector(`[data-qi="${i}"]`), q = arr[i];
         const val = n => (el.querySelector(`[name="${n}"]`) || {}).value;
         q.q = val('q').trim(); q.explain = (val('explain') || '').trim();
-        if (q.type === 'mcq') { q.choices = [0, 1, 2, 3].map(k => val('c' + k).trim()); q.answer = +el.querySelector('[name="ans-${i}"]:checked').value; }
-        if (q.type === 'tf') q.answer = el.querySelector('[name="ans-${i}"]:checked').value === 'true';
+        if (q.type === 'mcq') {
+          q.choices = [0, 1, 2, 3].map(k => val('c' + k).trim());
+          const ks = [...el.querySelectorAll('input[data-key]:checked')].map(x => +x.value);
+          q.answer = ks.length > 1 ? ks : (ks.length ? ks[0] : 0);
+        }
+        if (q.type === 'tf') q.answer = (el.querySelector('input[data-tf]:checked') || {}).value !== 'false';
         if (q.type === 'match') q.pairs = [...el.querySelectorAll('.pair')].map(p => [p.children[0].value.trim(), p.children[1].value.trim()]).filter(p => p[0] && p[1]);
         if (q.type === 'short') { q.keywords = val('kw').split(',').map(x => x.trim()).filter(Boolean); q.sample = val('sample').trim(); }
         const bad = !q.q || (q.type === 'mcq' && q.choices.some(c => !c)) || (q.type === 'match' && q.pairs.length < 2);
@@ -903,10 +909,10 @@
     const r = 'r' + i;
     let h = `<label class="field"><span>คำถาม</span><textarea name="q">${esc(q.q)}</textarea></label>`;
     if (q.type === 'mcq') {
-      h += q.choices.map((c, k) => `<div class="row" style="margin-bottom:6px;flex-wrap:nowrap"><label class="check"><input type="radio" name="ans-${i}" value="${k}" ${+q.answer === k ? 'checked' : ''}> ${THAI_KEYS[k]}</label><input name="c${k}" value="${esc(c)}" style="flex:1;min-height:40px;border:1px solid var(--line);border-radius:10px;padding:6px 10px;background:var(--surface)"></div>`).join('');
-      h += '<p class="small muted">เลือกวงกลมหน้าตัวเลือกที่ถูกต้อง</p>';
+      h += q.choices.map((c, k) => `<div class="row" style="margin-bottom:6px;flex-wrap:nowrap"><label class="check"><input type="checkbox" data-key value="${k}" ${answerKeys(q).includes(k) ? 'checked' : ''}> ${THAI_KEYS[k]}</label><input name="c${k}" value="${esc(c)}" style="flex:1;min-height:40px;border:1px solid var(--line);border-radius:10px;padding:6px 10px;background:var(--surface)"></div>`).join('');
+      h += '<p class="small muted">ติ๊กช่องหน้าตัวเลือกที่ถูกต้อง (ติ๊กได้มากกว่า 1 ข้อ ถ้ายอมรับคำตอบได้หลายแบบ)</p>';
     }
-    if (q.type === 'tf') h += `<div class="row"><label class="check"><input type="radio" name="ans-${i}" value="true" ${q.answer ? 'checked' : ''}> ถูก</label><label class="check"><input type="radio" name="ans-${i}" value="false" ${!q.answer ? 'checked' : ''}> ผิด</label></div>`;
+    if (q.type === 'tf') h += `<div class="row"><label class="check"><input type="radio" data-tf name="ans-${i}" value="true" ${q.answer ? 'checked' : ''}> ถูก</label><label class="check"><input type="radio" data-tf name="ans-${i}" value="false" ${!q.answer ? 'checked' : ''}> ผิด</label></div>`;
     if (q.type === 'match') h += `<div class="small" style="margin:6px 0">คู่ที่ถูกต้อง (ด้านขวาจะถูกสลับลำดับให้นักเรียนอัตโนมัติ)</div><div>${q.pairs.map(p => `<div class="pair grid2" style="margin-bottom:6px"><input value="${esc(p[0])}" placeholder="ด้านซ้าย"><input value="${esc(p[1])}" placeholder="คู่ที่ถูกต้อง"></div>`).join('')}</div><button class="btn sm" type="button" data-addpair>+ เพิ่มคู่</button>`;
     if (q.type === 'short') h += `<label class="field"><span>คำสำคัญที่ควรมีในคำตอบ (คั่นด้วยจุลภาค ,)</span><input name="kw" value="${esc((q.keywords || []).join(', '))}"></label>
       <label class="field"><span>แนวคำตอบ</span><textarea name="sample">${esc(q.sample || '')}</textarea></label>
