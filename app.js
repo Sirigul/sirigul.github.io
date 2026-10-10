@@ -374,9 +374,16 @@
     `, root => {
       root.querySelector('#st-name').focus();
       root.querySelector('#st-ok').onclick = () => {
-        const v = id => root.querySelector(id).value.trim();
-        const st = { name: v('#st-name'), room: v('#st-room'), no: v('#st-no'), studentId: v('#st-id') };
-        if (!st.name || !/\d/.test(st.room) || !st.no || !st.studentId) { toast('กรุณากรอกข้อมูลให้ครบทุกช่อง'); return; }
+        // Thai digits -> Arabic so rooms/numbers sort and group correctly in the score sheet
+        const digits = s => s.replace(/[๐-๙]/g, d => String('๐๑๒๓๔๕๖๗๘๙'.indexOf(d)));
+        const v = id => digits(root.querySelector(id).value.trim());
+        const roomM = v('#st-room').match(/(\d+)\s*\/\s*(\d+)/);
+        const st = { name: root.querySelector('#st-name').value.trim().replace(/\s+/g, ' '), room: roomM ? 'ม.' + roomM[1] + '/' + roomM[2] : '',
+          no: String(parseInt(v('#st-no'), 10) || ''), studentId: v('#st-id').replace(/\D/g, '') };
+        if (!st.name) { toast('กรุณากรอกชื่อ-นามสกุล'); return; }
+        if (!st.room) { toast('กรุณากรอกห้องให้ครบ เช่น ม.2/3'); return; }
+        if (!st.no) { toast('กรุณากรอกเลขที่เป็นตัวเลข'); return; }
+        if (!st.studentId) { toast('กรุณากรอกเลขประจำตัวนักเรียนเป็นตัวเลข'); return; }
         store.set(K.student, st); closeModal(); done && done(st);
       };
     });
@@ -387,7 +394,7 @@
     const u = unitById(id);
     if (!u) { location.hash = '#/'; return; }
     const st = store.get(K.student, null);
-    if (!st) { $app.innerHTML = ''; studentForm(() => render()); return; }
+    if (!st || !/^ม\.\d+\/\d+$/.test(st.room || '') || !/^\d+$/.test(st.no || '')) { $app.innerHTML = ''; studentForm(() => render()); return; }
     $app.style.setProperty('--unit', u.color || '#2b4c7e');
     const items = (u.exercises || []).map(q => q.type === 'match' ? Object.assign({}, q, { _right: shuffle(q.pairs.map(p => p[1])) }) : q);
     const ans = {};
