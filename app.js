@@ -49,7 +49,7 @@
   const unitById = id => (C.units || []).find(u => u.id === id);
   const unitIndex = id => (C.units || []).findIndex(u => u.id === id);
 
-  // Tiny markdown subset: ## heading, - bullet, 1. numbered, **bold**, blank-line paragraphs
+  // Tiny markdown subset: ## heading, - bullet, 1. numbered, **bold**, ![caption](image), blank-line paragraphs
   function md(src) {
     const lines = String(src || '').replace(/\r/g, '').split('\n');
     let html = '', list = null, para = [];
@@ -62,7 +62,12 @@
       if (!line) { flushPara(); closeList(); continue; }
       if ((m = line.match(/^#{1,4}\s+(.*)$/))) { flushPara(); closeList(); html += '<h3>' + inline(m[1]) + '</h3>'; continue; }
       if ((m = line.match(/^[-*•]\s+(.*)$/))) { flushPara(); if (list !== 'ul') { closeList(); html += '<ul>'; list = 'ul'; } html += '<li>' + inline(m[1]) + '</li>'; continue; }
-      if ((m = line.match(/^\d+[.)]\s+(.*)$/))) { flushPara(); if (list !== 'ol') { closeList(); html += '<ol>'; list = 'ol'; } html += '<li>' + inline(m[1]) + '</li>'; continue; }
+      if (/^(!\[[^\]]*\]\([^)\s]+\)\s*)+$/.test(line)) { // ![คำอธิบาย](path) — one or more pictures on a line
+        flushPara(); closeList();
+        const figs = [...line.matchAll(/!\[([^\]]*)\]\(([^)\s]+)\)/g)].map(f => `<figure><img loading="lazy" src="${esc(f[2])}" alt="${esc(f[1])}">${f[1] ? `<figcaption>${esc(f[1])}</figcaption>` : ''}</figure>`);
+        html += `<div class="md-figs n${Math.min(figs.length, 3)}">${figs.join('')}</div>`; continue;
+      }
+      if ((m = line.match(/^(\d+)[.)]\s+(.*)$/))) { flushPara(); if (list !== 'ol') { closeList(); html += m[1] === '1' ? '<ol>' : `<ol start="${+m[1]}">`; list = 'ol'; } html += '<li>' + inline(m[2]) + '</li>'; continue; }
       closeList(); para.push(line);
     }
     flushPara(); closeList();
@@ -73,6 +78,27 @@
     const m = String(url || '').match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{11})/);
     return m ? m[1] : null;
   }
+  // ---------- sources / references ----------
+  const SRC_TYPES = [['web', '🌐', 'เว็บไซต์'], ['video', '▶️', 'วิดีโอ'], ['book', '📖', 'หนังสือ/เอกสาร'], ['media', '🖼️', 'รูปภาพและสื่อ']];
+  const srcDomain = url => { try { return new URL(url).hostname.replace(/^www\./, ''); } catch (e) { return ''; } };
+  function sourcesHtml(list) {
+    list = (list || []).filter(x => x && (x.title || x.url));
+    if (!list.length) return '';
+    return SRC_TYPES.map(([t, icon, name]) => {
+      const items = list.filter(x => (x.type || 'web') === t);
+      if (!items.length) return '';
+      return `<div class="src-group"><h4>${icon} ${name}</h4><ol class="src-list">${items.map(x => {
+        const label = esc(x.title || srcDomain(x.url) || x.url);
+        const meta = [x.url && t !== 'book' ? srcDomain(x.url) : '', x.topic && x.topic !== x.title ? 'เรื่อง: ' + x.topic : '', x.use || ''].filter(Boolean).map(esc).join(' · ');
+        return `<li>${x.url ? `<a href="${esc(x.url)}" target="_blank" rel="noopener" data-ext>${label}</a>` : `<span>${label}</span>`}${meta ? `<div class="small muted">${meta}</div>` : ''}</li>`;
+      }).join('')}</ol></div>`;
+    }).join('');
+  }
+  function wireExtLinks(root) {
+    if (!isAndroid) return;
+    root.querySelectorAll('a[data-ext]').forEach(a => a.onclick = e => { e.preventDefault(); openExternal(a.href); });
+  }
+
   function openExternal(url) {
     if (isAndroid && window.AndroidBridge.openExternal) window.AndroidBridge.openExternal(url);
     else window.open(url, '_blank', 'noopener');
@@ -180,7 +206,7 @@
   document.getElementById('backBtn').onclick = () => {
     const h = location.hash;
     if (/^#\/quiz\//.test(h)) location.hash = h.replace('/quiz/', '/unit/') + '/exercise';
-    else if (/^#\/unit\//.test(h) || h === '#/course' || h === '#/teacher') location.hash = '#/';
+    else if (/^#\/unit\//.test(h) || h === '#/course' || h === '#/sources' || h === '#/teacher') location.hash = '#/';
     else if (/^#\/teacher\//.test(h)) location.hash = '#/teacher';
     else history.back();
   };
@@ -205,6 +231,11 @@
       <a class="card course-link" href="#/course" style="margin-bottom:16px">
         <span class="u-icon">🧭</span>
         <span><strong>แนะนำรายวิชา / ปฐมนิเทศ</strong><br><span class="small muted">คำอธิบายรายวิชา ตัวชี้วัด และข้อตกลงในชั้นเรียน</span></span>
+      </a>` : ''}
+      ${hasSources() ? `
+      <a class="card course-link" href="#/sources" style="margin-bottom:16px">
+        <span class="u-icon">📚</span>
+        <span><strong>แหล่งอ้างอิง</strong><br><span class="small muted">หนังสือ เว็บไซต์ และวิดีโอที่ใช้ทำเนื้อหาทุกหน่วย</span></span>
       </a>` : ''}
       <div class="unit-grid">
         ${units.map((u, i) => {
@@ -234,6 +265,23 @@
         ${(c.slides || []).length ? `<div class="card"><h2>สไลด์แนะนำวิชา</h2><div id="slideHost"></div></div>` : ''}
       </div>`;
     if ((c.slides || []).length) slideViewer(document.getElementById('slideHost'), c.slides);
+  });
+
+  // ================= SOURCES =================
+  function hasSources() { return ((C.course || {}).sources || []).length || (C.units || []).some(u => (u.sources || []).length); }
+  route(/^\/sources$/, function sources() {
+    const c = C.course || {};
+    const units = (C.units || []).filter(u => (u.sources || []).length);
+    $app.innerHTML = `
+      <div class="stack">
+        <h1>📚 แหล่งอ้างอิง</h1>
+        <p class="muted">เนื้อหา สไลด์ และสื่อในเว็บนี้ ครูเรียบเรียงขึ้นเองโดยศึกษาข้อมูลจากแหล่งต่อไปนี้ กดชื่อเพื่อเปิดแหล่งต้นฉบับ</p>
+        ${(c.sources || []).length ? `<div class="card sources"><h2>ทั้งรายวิชา</h2>${sourcesHtml(c.sources)}</div>` : ''}
+        ${units.map(u => `<div class="card sources" style="--unit:${esc(u.color || '#2b4c7e')}">
+          <h2><span>${esc(u.icon || '📘')}</span> หน่วยที่ ${unitIndex(u.id) + 1} ${esc(u.title)}</h2>${sourcesHtml(u.sources)}</div>`).join('')}
+        ${hasSources() ? '' : '<p class="muted">ยังไม่มีแหล่งอ้างอิง</p>'}
+      </div>`;
+    wireExtLinks($app);
   });
 
   // ================= UNIT =================
@@ -273,8 +321,10 @@
             <label class="check"><input type="checkbox" data-lesson="${esc(l.id)}" ${p[l.id] ? 'checked' : ''}> อ่านเรื่องนี้แล้ว</label>
           </article>`).join('')}
         ${lessons.length ? '' : '<p class="muted">ยังไม่มีเนื้อหา</p>'}
+        ${(u.sources || []).length ? `<div class="card sources"><h3>📚 แหล่งที่มาของหน่วยนี้</h3>${sourcesHtml(u.sources)}<p class="small"><a href="#/sources">ดูแหล่งอ้างอิงทุกหน่วย ›</a></p></div>` : ''}
         <div class="card row"><span>อ่านครบแล้ว? ลองทำแบบฝึกหัดหลังเรียนดูนะ</span><span class="spacer"></span><a class="btn primary" href="#/unit/${esc(u.id)}/exercise">✏️ ไปทำแบบฝึกหัด</a></div>
       </div>`;
+    wireExtLinks(el);
     el.querySelectorAll('input[data-lesson]').forEach(cb => cb.onchange = () => setProgress(pr => {
       pr[u.id] = pr[u.id] || {}; pr[u.id].read = pr[u.id].read || {};
       if (cb.checked) pr[u.id].read[cb.dataset.lesson] = 1; else delete pr[u.id].read[cb.dataset.lesson];
@@ -722,10 +772,13 @@
         <button class="btn primary" id="c-save">บันทึก</button>
       </div>
       <div class="card"><h2>สไลด์แนะนำวิชา</h2><div id="c-slides"></div></div>
+      <div class="card"><h2>📚 แหล่งอ้างอิงทั้งรายวิชา</h2><p class="small muted">เช่น หนังสือเรียน หลักสูตร — แสดงในหน้า "แหล่งอ้างอิง"</p><div id="c-src"></div></div>
       <a class="btn" href="#/teacher">‹ กลับหน้าครู</a>
     </div>`;
     document.getElementById('c-save').onclick = () => { c.description = document.getElementById('c-desc').value; saveDraft(); };
     slideEditor(document.getElementById('c-slides'), c, 'slides');
+    c.sources = c.sources || [];
+    sourceEditor(document.getElementById('c-src'), c.sources);
   });
 
   // ---------- teacher: unit editor ----------
@@ -735,7 +788,7 @@
     ensureDraft();
     const u = draft.units.find(x => x.id === id);
     if (!u) { location.hash = '#/teacher'; return; }
-    ['objectives', 'lessons', 'slides', 'videos', 'files', 'exercises'].forEach(k => { u[k] = u[k] || []; });
+    ['objectives', 'lessons', 'slides', 'videos', 'files', 'exercises', 'sources'].forEach(k => { u[k] = u[k] || []; });
     $app.style.setProperty('--unit', u.color || '#2b4c7e');
     $app.innerHTML = `<div class="stack">
       <div class="row"><h1 style="margin:0">${esc(u.icon)} แก้ไข: ${esc(u.title)}</h1><span class="spacer"></span><a class="btn sm" href="#/unit/${esc(u.id)}">ดูหน้านักเรียน</a></div>
@@ -756,6 +809,7 @@
       <details class="t-item"><summary>▶️ วิดีโอ (<span data-count="videos">${u.videos.length}</span>)</summary><div id="ed-videos"></div></details>
       <details class="t-item"><summary>📄 เอกสาร/ใบงาน (<span data-count="files">${u.files.length}</span>)</summary><div id="ed-files"></div></details>
       <details class="t-item"><summary>✏️ แบบฝึกหัด (<span data-count="exercises">${u.exercises.length}</span> ข้อ)</summary><div id="ed-ex"></div></details>
+      <details class="t-item"><summary>📚 แหล่งที่มา (<span data-count="sources">${u.sources.length}</span>)</summary><div id="ed-src"></div></details>
       <a class="btn" href="#/teacher">‹ กลับหน้าครู</a>
     </div>`;
     const $ = s => document.getElementById(s);
@@ -773,7 +827,33 @@
     linkListEditor($('ed-videos'), u.videos, 'url', 'ลิงก์ YouTube', 'https://www.youtube.com/watch?v=...');
     linkListEditor($('ed-files'), u.files, 'path', 'ที่อยู่ไฟล์ (เช่น files/u1/xxx.pdf) หรือลิงก์ Google Drive', 'files/u1/ชื่อไฟล์.pdf');
     exerciseEditor($('ed-ex'), u);
+    sourceEditor($('ed-src'), u.sources);
   });
+
+  function sourceEditor(host, arr) {
+    const draw = () => {
+      host.innerHTML = `<p class="small muted">ใส่ชื่อเรื่อง/ชื่อวิดีโอ ลิงก์ และบอกว่าใช้ทำอะไร (เช่น "สไลด์ PowerPoint จัดทำเอง") — ถ้าไม่มีลิงก์ เว้นว่างได้</p>` +
+        arr.map((v, i) => `<div class="t-item">
+          <div class="grid2">
+            <label class="field"><span>ประเภท</span><select data-k="type" data-i="${i}">${SRC_TYPES.map(([t, ic, n]) => `<option value="${t}" ${(v.type || 'web') === t ? 'selected' : ''}>${ic} ${n}</option>`).join('')}</select></label>
+            <label class="field"><span>ใช้ในเรื่อง</span><input data-k="topic" data-i="${i}" value="${esc(v.topic || '')}"></label>
+          </div>
+          <label class="field"><span>ชื่อแหล่ง / ชื่อวิดีโอ / รายการหนังสือ</span><input data-k="title" data-i="${i}" value="${esc(v.title || '')}"></label>
+          <label class="field"><span>ลิงก์</span><input data-k="url" data-i="${i}" value="${esc(v.url || '')}" placeholder="https://..."></label>
+          <label class="field"><span>ใช้ทำอะไร</span><input data-k="use" data-i="${i}" value="${esc(v.use || '')}" placeholder="เช่น สไลด์ PowerPoint จัดทำเอง"></label>
+          ${toolsHtml(i)}</div>`).join('') +
+        `<div class="row"><button class="btn sm" id="src-add">+ เพิ่มแหล่งที่มา</button><button class="btn sm primary" id="src-save">บันทึก</button></div>`;
+      host.querySelector('#src-add').onclick = () => { collect(); arr.push({ type: 'web', title: '', url: '', topic: '', use: '' }); draw(); };
+      host.querySelector('#src-save').onclick = () => {
+        collect();
+        for (let i = arr.length - 1; i >= 0; i--) if (!arr[i].title && !arr[i].url) arr.splice(i, 1);
+        saveDraft(); draw();
+      };
+      wireTools(host, arr, draw);
+    };
+    const collect = () => host.querySelectorAll('[data-k]').forEach(inp => { if (arr[+inp.dataset.i]) arr[+inp.dataset.i][inp.dataset.k] = inp.value.trim(); });
+    draw();
+  }
 
   function moveItem(arr, i, d) { const j = i + d; if (j < 0 || j >= arr.length) return; [arr[i], arr[j]] = [arr[j], arr[i]]; }
   function toolsHtml(i) {
