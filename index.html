@@ -9,7 +9,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <!-- non-blocking: offline devices fall back to system Thai fonts instead of waiting -->
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&family=Prompt:wght@500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-  <link rel="stylesheet" href="app.css">
+  <!-- always load the newest app.css / content.js / app.js after an upload (no stale browser cache) -->
+  <script>window.__V = /^https?:/.test(location.protocol) ? '?v=' + Date.now() : '';
+    document.write('<link rel="stylesheet" href="app.css' + window.__V + '">');</script>
+  <noscript><link rel="stylesheet" href="app.css"></noscript>
 </head>
 <body>
   <header class="topbar">
@@ -29,7 +32,6 @@
   <div id="modal" class="modal" hidden></div>
   <div id="toast" class="toast" hidden></div>
 
-  <script src="content.js"></script>
-  <script src="app.js"></script>
+  <script>document.write('<script src="content.js' + window.__V + '"><\/script><script src="app.js' + window.__V + '"><\/script>');</script>
 </body>
 </html>
