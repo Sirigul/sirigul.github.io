@@ -87,7 +87,20 @@ window.APP_CONTENT = {
     "media/u1/slide43.jpg",
     "media/u1/slide44.jpg"
    ],
-   "videos": [],
+   "videos": [
+    {
+     "title": "ไอเดียบ้านประหยัดพลังงาน ลดค่าไฟ สู้โลกร้อน",
+     "url": "https://www.youtube.com/watch?v=UtOqmSu2gcU"
+    },
+    {
+     "title": "บ้านประหยัดพลังงานดีดีรักษ์ดิน-รักษ์น้ำ",
+     "url": "https://www.youtube.com/watch?v=SKtH2tb6YK0"
+    },
+    {
+     "title": "Cob House \"บ้านดินรักษ์โลก\" และประหยัดงบ",
+     "url": "https://www.youtube.com/watch?v=0VbhtD6X4vM"
+    }
+   ],
    "files": [
     {
      "title": "ใบงานที่ 1 การออกแบบ้านประหยัดพลังงาน",
@@ -96,6 +109,10 @@ window.APP_CONTENT = {
     {
      "title": "สไลด์ประกอบการสอน บ้านและสวนน่าอยู่ (ชุดภาพการ์ตูน 22 หน้า)",
      "path": "files/u1/u1-slides-canva.pdf"
+    },
+    {
+     "title": "สไลด์ประกอบการสอน บ้านและสวนน่าอยู่ (ชุดเดิม 43 หน้า)",
+     "path": "files/u1/home-garden.pdf"
     }
    ],
    "objectives": [
@@ -300,6 +317,27 @@ window.APP_CONTENT = {
      "url": "",
      "topic": "",
      "use": ""
+    },
+    {
+     "type": "video",
+     "title": "ไอเดียบ้านประหยัดพลังงาน ลดค่าไฟ สู้โลกร้อน",
+     "url": "https://www.youtube.com/watch?v=UtOqmSu2gcU",
+     "topic": "บ้านประหยัดพลังงานและบ้านดิน",
+     "use": "วิดีโอประกอบการเรียน (KongGreenGreen)"
+    },
+    {
+     "type": "video",
+     "title": "บ้านประหยัดพลังงานดีดีรักษ์ดิน-รักษ์น้ำ",
+     "url": "https://www.youtube.com/watch?v=SKtH2tb6YK0",
+     "topic": "บ้านประหยัดพลังงานและบ้านดิน",
+     "use": "วิดีโอประกอบการเรียน (Thairath News)"
+    },
+    {
+     "type": "video",
+     "title": "Cob House \"บ้านดินรักษ์โลก\" และประหยัดงบ",
+     "url": "https://www.youtube.com/watch?v=0VbhtD6X4vM",
+     "topic": "บ้านประหยัดพลังงานและบ้านดิน",
+     "use": "วิดีโอประกอบการเรียน (poommanee baandin)"
     }
    ]
   },
@@ -368,6 +406,10 @@ window.APP_CONTENT = {
     {
      "title": "ใบงาน เครื่องดื่ม",
      "path": "files/u2/worksheet-drinks.pdf"
+    },
+    {
+     "title": "สไลด์ประกอบการสอน เครื่องดื่มเพื่อสุขภาพ (30 หน้า)",
+     "path": "files/u2/healthy-drinks.pdf"
     }
    ],
    "objectives": [
@@ -642,8 +684,20 @@ window.APP_CONTENT = {
      "url": "https://www.youtube.com/watch?v=OFtSPRud0wo"
     },
     {
-     "title": "สร้างรายได้ เลี้ยงหมูสู่อาชีพ เลี้ยงแบบพื้นบ้าน",
-     "url": "https://www.youtube.com/watch?v=1uWaHimkY5A"
+     "title": "เทคนิคการเลี้ยงกบ การเตรียมบ่อและการดูแล",
+     "url": "https://www.youtube.com/watch?v=sPFerSiZLfc"
+    },
+    {
+     "title": "เลี้ยงกบนาในบ่อซีเมนต์",
+     "url": "https://www.youtube.com/watch?v=NF6wEkjlsEQ"
+    },
+    {
+     "title": "เลี้ยงหมูหลุมสร้างรายได้ ช่วยลดต้นทุน-ลดกลิ่นได้ดี",
+     "url": "https://www.youtube.com/watch?v=wi-gZpdyDOk"
+    },
+    {
+     "title": "เลี้ยงหมูหลุม สร้างรายได้ สร้างอาชีพ",
+     "url": "https://www.youtube.com/watch?v=V4O5MwOPabY"
     }
    ],
    "files": [
@@ -654,6 +708,10 @@ window.APP_CONTENT = {
     {
      "title": "ใบงาน การเลี้ยงไก่ไข่",
      "path": "files/u3/worksheet-chicken.pdf"
+    },
+    {
+     "title": "สไลด์ประกอบการสอน การเลี้ยงสัตว์ ชนิดของโรงเรือน (26 หน้า)",
+     "path": "files/u3/animals-income.pdf"
     }
    ],
    "objectives": [
@@ -999,10 +1057,31 @@ window.APP_CONTENT = {
     },
     {
      "type": "video",
-     "title": "สร้างรายได้ เลี้ยงหมูสู่อาชีพ เลี้ยงแบบพื้นบ้าน",
-     "url": "https://www.youtube.com/watch?v=1uWaHimkY5A",
+     "title": "เทคนิคการเลี้ยงกบ การเตรียมบ่อและการดูแล",
+     "url": "https://www.youtube.com/watch?v=sPFerSiZLfc",
+     "topic": "การเลี้ยงกบ",
+     "use": "วิดีโอประกอบการเรียน (เกษตรกรไทย สร้างรายได้)"
+    },
+    {
+     "type": "video",
+     "title": "เลี้ยงกบนาในบ่อซีเมนต์",
+     "url": "https://www.youtube.com/watch?v=NF6wEkjlsEQ",
+     "topic": "การเลี้ยงกบ",
+     "use": "วิดีโอประกอบการเรียน (9MCOT)"
+    },
+    {
+     "type": "video",
+     "title": "เลี้ยงหมูหลุมสร้างรายได้ ช่วยลดต้นทุน-ลดกลิ่นได้ดี",
+     "url": "https://www.youtube.com/watch?v=wi-gZpdyDOk",
      "topic": "การเลี้ยงสุกร",
-     "use": "วิดีโอประกอบการเรียน"
+     "use": "วิดีโอประกอบการเรียน (เทคโนโลยีชาวบ้าน)"
+    },
+    {
+     "type": "video",
+     "title": "เลี้ยงหมูหลุม สร้างรายได้ สร้างอาชีพ",
+     "url": "https://www.youtube.com/watch?v=V4O5MwOPabY",
+     "topic": "การเลี้ยงสุกร",
+     "use": "วิดีโอประกอบการเรียน (AgriTV)"
     }
    ]
   },
@@ -1036,11 +1115,32 @@ window.APP_CONTENT = {
     "media/u4/slide21.jpg",
     "media/u4/slide22.jpg"
    ],
-   "videos": [],
+   "videos": [
+    {
+     "title": "หลัก 3R",
+     "url": "https://www.youtube.com/watch?v=TA6edbpYmiw"
+    },
+    {
+     "title": "DIY โคมไฟจากขวดน้ำพลาสติก",
+     "url": "https://www.youtube.com/watch?v=juKNHr8xXJQ"
+    },
+    {
+     "title": "DIY โคมไฟจากไม้ไอติม",
+     "url": "https://www.youtube.com/watch?v=8mK6I0oJ-P4"
+    },
+    {
+     "title": "DIY โคมไฟกาแลคซี่จากกระดาษลัง",
+     "url": "https://www.youtube.com/watch?v=8VdDsc2TV3U"
+    }
+   ],
    "files": [
     {
      "title": "การประดิษฐ์ของใช้ (PDF)",
      "path": "files/u4/crafts.pdf"
+    },
+    {
+     "title": "ใบงาน หน่วยที่ 4 ทบทวนความรู้และออกแบบโคมไฟจากวัสดุเหลือใช้ (2 หน้า)",
+     "path": "files/u4/worksheet-crafts.pdf"
     }
    ],
    "objectives": [
@@ -1325,6 +1425,34 @@ window.APP_CONTENT = {
      "url": "https://prangthongblog.wordpress.com/ไอเดียประดิษฐ์โคมไฟ/",
      "topic": "ไอเดียประดิษฐ์โคมไฟ",
      "use": "เอกสารประกอบการเรียน"
+    },
+    {
+     "type": "video",
+     "title": "หลัก 3R",
+     "url": "https://www.youtube.com/watch?v=TA6edbpYmiw",
+     "topic": "หลัก 3R",
+     "use": "วิดีโอประกอบการเรียน (อัยลดา มะณีมา)"
+    },
+    {
+     "type": "video",
+     "title": "DIY โคมไฟจากขวดน้ำพลาสติก",
+     "url": "https://www.youtube.com/watch?v=juKNHr8xXJQ",
+     "topic": "ประดิษฐ์โคมไฟ",
+     "use": "วิดีโอประกอบการเรียน (LeKise Lighting)"
+    },
+    {
+     "type": "video",
+     "title": "DIY โคมไฟจากไม้ไอติม",
+     "url": "https://www.youtube.com/watch?v=8mK6I0oJ-P4",
+     "topic": "ประดิษฐ์โคมไฟ",
+     "use": "วิดีโอประกอบการเรียน (น้าหนุ่ยคุ้ยขยะ by Unclenui)"
+    },
+    {
+     "type": "video",
+     "title": "DIY โคมไฟกาแลคซี่จากกระดาษลัง",
+     "url": "https://www.youtube.com/watch?v=8VdDsc2TV3U",
+     "topic": "ประดิษฐ์โคมไฟ",
+     "use": "วิดีโอประกอบการเรียน (LeKise Lighting)"
     }
    ]
   },
@@ -1351,12 +1479,32 @@ window.APP_CONTENT = {
     {
      "title": "ประวัติการสื่อสารโทรคมนาคม ชุด \"พัฒนาอย่างไม่หยุดยั้ง\"",
      "url": "https://www.youtube.com/watch?v=WAVE8edZ5SI"
+    },
+    {
+     "title": "ส่ง EMS กับ ลงทะเบียน ต่างกันยังไง",
+     "url": "https://www.youtube.com/watch?v=79WIfwXWHiU"
+    },
+    {
+     "title": "Digital Citizen ตอนที่ 1",
+     "url": "https://www.youtube.com/watch?v=zCG_TLrx_AA"
+    },
+    {
+     "title": "การใช้ internet อย่างปลอดภัย",
+     "url": "https://www.youtube.com/watch?v=CXXYNyDBHG0"
     }
    ],
    "files": [
     {
      "title": "ใบงาน งานธุรกิจ",
      "path": "files/u5/worksheet-business.pdf"
+    },
+    {
+     "title": "สไลด์ประกอบการสอน การติดต่อสื่อสาร ชุดที่ 1 (9 หน้า)",
+     "path": "files/u5/business.pdf"
+    },
+    {
+     "title": "สไลด์ประกอบการสอน การติดต่อสื่อสาร ชุดที่ 2 (11 หน้า)",
+     "path": "files/u5/communication.pdf"
     }
    ],
    "objectives": [
@@ -1536,6 +1684,27 @@ window.APP_CONTENT = {
      "url": "https://www.youtube.com/watch?v=WAVE8edZ5SI&t=5s",
      "topic": "ประวัติการติดต่อสื่อสารไทย",
      "use": "วิดีโอประกอบการเรียน"
+    },
+    {
+     "type": "video",
+     "title": "ส่ง EMS กับ ลงทะเบียน ต่างกันยังไง",
+     "url": "https://www.youtube.com/watch?v=79WIfwXWHiU",
+     "topic": "การใช้บริการไปรษณีย์",
+     "use": "วิดีโอประกอบการเรียน (MonoManz)"
+    },
+    {
+     "type": "video",
+     "title": "Digital Citizen ตอนที่ 1",
+     "url": "https://www.youtube.com/watch?v=zCG_TLrx_AA",
+     "topic": "การสื่อสารไร้พรมแดนและการใช้อย่างปลอดภัย",
+     "use": "วิดีโอประกอบการเรียน (ETDA Thailand)"
+    },
+    {
+     "type": "video",
+     "title": "การใช้ internet อย่างปลอดภัย",
+     "url": "https://www.youtube.com/watch?v=CXXYNyDBHG0",
+     "topic": "การสื่อสารไร้พรมแดนและการใช้อย่างปลอดภัย",
+     "use": "วิดีโอประกอบการเรียน (SWU Computer Center)"
     }
    ]
   },
@@ -1546,7 +1715,24 @@ window.APP_CONTENT = {
    "color": "#c4527a",
    "description": "การเตรียมตัวเข้าสู่อาชีพ และทักษะที่จำเป็นต่อการประกอบอาชีพ",
    "slides": [],
-   "videos": [],
+   "videos": [
+    {
+     "title": "แนวทางการเลือกอาชีพ",
+     "url": "https://www.youtube.com/watch?v=M47iy9qgab4"
+    },
+    {
+     "title": "การวิเคราะห์อาชีพและการตัดสินใจเลือกอาชีพ",
+     "url": "https://www.youtube.com/watch?v=kk5ZR9FHQBc"
+    },
+    {
+     "title": "เทคนิคหาอาชีพที่ใช่ จากสิ่งที่ตัวเองชอบ",
+     "url": "https://www.youtube.com/watch?v=mxUnwtzPEgE"
+    },
+    {
+     "title": "ส่อง 10 อาชีพในฝัน GEN Z",
+     "url": "https://www.youtube.com/watch?v=2jKMxcRQWwA"
+    }
+   ],
    "files": [
     {
      "title": "อาชีพในฝัน (PDF)",
@@ -1555,6 +1741,10 @@ window.APP_CONTENT = {
     {
      "title": "ใบงาน อาชีพในฝันของฉัน (My Dream Career)",
      "path": "files/u6/draw-your-career.jpg"
+    },
+    {
+     "title": "ใบงาน เรื่อง อาชีพในฝัน (แบบเขียนตอบ พิมพ์ได้)",
+     "path": "files/u6/worksheet-career.pdf"
     }
    ],
    "objectives": [
@@ -1724,6 +1914,34 @@ window.APP_CONTENT = {
      "url": "https://sites.google.com/site/15xachiphnifanploy/",
      "topic": "อาชีพในฝันของเด็กไทย",
      "use": "เอกสารประกอบการเรียน"
+    },
+    {
+     "type": "video",
+     "title": "แนวทางการเลือกอาชีพ",
+     "url": "https://www.youtube.com/watch?v=M47iy9qgab4",
+     "topic": "ปัจจัยในการเลือกอาชีพ",
+     "use": "วิดีโอประกอบการเรียน (Rachsingkorn Channel)"
+    },
+    {
+     "type": "video",
+     "title": "การวิเคราะห์อาชีพและการตัดสินใจเลือกอาชีพ",
+     "url": "https://www.youtube.com/watch?v=kk5ZR9FHQBc",
+     "topic": "การวิเคราะห์ตนเองเพื่อเลือกอาชีพ",
+     "use": "วิดีโอประกอบการเรียน (Rachsingkorn Channel)"
+    },
+    {
+     "type": "video",
+     "title": "เทคนิคหาอาชีพที่ใช่ จากสิ่งที่ตัวเองชอบ",
+     "url": "https://www.youtube.com/watch?v=mxUnwtzPEgE",
+     "topic": "การวิเคราะห์ตนเองเพื่อเลือกอาชีพ",
+     "use": "วิดีโอประกอบการเรียน (SET Thailand)"
+    },
+    {
+     "type": "video",
+     "title": "ส่อง 10 อาชีพในฝัน GEN Z",
+     "url": "https://www.youtube.com/watch?v=2jKMxcRQWwA",
+     "topic": "อาชีพในฝันของฉัน",
+     "use": "วิดีโอประกอบการเรียน (Ch7HD News)"
     }
    ]
   }
