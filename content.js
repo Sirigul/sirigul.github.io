@@ -1714,7 +1714,23 @@ window.APP_CONTENT = {
    "icon": "🌟",
    "color": "#c4527a",
    "description": "การเตรียมตัวเข้าสู่อาชีพ และทักษะที่จำเป็นต่อการประกอบอาชีพ",
-   "slides": [],
+   "slides": [
+    "media/u6/slide01.jpg",
+    "media/u6/slide02.jpg",
+    "media/u6/slide03.jpg",
+    "media/u6/slide04.jpg",
+    "media/u6/slide05.jpg",
+    "media/u6/slide06.jpg",
+    "media/u6/slide07.jpg",
+    "media/u6/slide08.jpg",
+    "media/u6/slide09.jpg",
+    "media/u6/slide10.jpg",
+    "media/u6/slide11.jpg",
+    "media/u6/slide12.jpg",
+    "media/u6/slide13.jpg",
+    "media/u6/slide14.jpg",
+    "media/u6/slide15.jpg"
+   ],
    "videos": [
     {
      "title": "แนวทางการเลือกอาชีพ",
@@ -1734,6 +1750,10 @@ window.APP_CONTENT = {
     }
    ],
    "files": [
+    {
+     "title": "สไลด์ประกอบการสอน อาชีพในฝัน (15 หน้า)",
+     "path": "files/u6/u6-slides.pdf"
+    },
     {
      "title": "อาชีพในฝัน (PDF)",
      "path": "files/u6/careers.pdf"
@@ -1942,6 +1962,13 @@ window.APP_CONTENT = {
      "url": "https://www.youtube.com/watch?v=2jKMxcRQWwA",
      "topic": "อาชีพในฝันของฉัน",
      "use": "วิดีโอประกอบการเรียน (Ch7HD News)"
+    },
+    {
+     "type": "media",
+     "title": "สไลด์ประกอบการสอน \"อาชีพในฝัน\" — ครูสิริกุล บุญเรืองศักดิ์ เรียบเรียงจากเนื้อหาบทเรียน ตกแต่งภาพประกอบด้วย Canva",
+     "url": "",
+     "topic": "",
+     "use": ""
     }
    ]
   }
